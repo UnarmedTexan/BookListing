@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Book Search</string>
+
+    <!--Book "Subject" search title [CHAR LIMIT=15] -->
+    <string name="subject_search">Subject:</string>
+
+    <!--Book "Title" search title [CHAR LIMIT=15] -->
+    <string name="title_search">Title:</string>
+
+    <!--Book "Author" search title [CHAR LIMIT=15] -->
+    <string name="author_search">Author:</string>
+
+    <!--"Search" button text [CHAR LIMIT=5] -->
+    <string name="search_button">Search</string>
+
+    <!--Book "Subject" search hint [CHAR LIMIT=15] -->
+    <string name="subject_hint">Enter Subject</string>
+
+    <!--Book "Title" search hint [CHAR LIMIT=15] -->
+    <string name="title_hint">Enter Title</string>
+
+    <!--Book "Author" search hint [CHAR LIMIT=15] -->
+    <string name="author_hint">Enter Author</string>
+
+    <!-- Text to display when no books are found to match the search criteria [CHAR LIMIT=NONE] -->
+    <string name="no_books">No books found.</string>
+
+    <!-- Text to display when there is no network connection [CHAR LIMIT=NONE] -->
+    <string name="no_connection">No network connection</string>
+
+    <!-- Text to display when no search term has been entered [CHAR LIMIT=NONE] -->
+    <string name="no_search_term">Please enter a search term!</string>
+
+    <!-- End of URL search string [CHAR LIMIT=NONE] -->
+    <string name="max_results">Please enter a search term!</string>
+
+</resources>
