@@ -10,7 +10,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -124,15 +123,7 @@ public class SearchUtils {
      * Return a list of {@link Book} objects that has been built up from
      * parsing a JSON response.
      */
-
     private static List<Book> extractBookInfoFromJson(String booksJSON) {
-
-//        // If the JSON response is empty or null, then return.
-//        Log.v(LOG_TAG, "JSON string is :" );
-//
-//        if (TextUtils.isEmpty(booksJSON)) {
-//            return null;
-//        }
 
         // Create an empty ArrayList for the purpose of adding books
         List<Book> books = new ArrayList<>();
@@ -169,25 +160,46 @@ public class SearchUtils {
 
                 // Extract the value for the key called "description"
                 String bookDescription = volumeInfo.optString("description");
+                // Trim the bookDescription if it's length is over 150 characters
                     if (bookDescription.length() > 150){
                         bookDescription = bookDescription.substring(0, 150) + "...";
                     }
 
                 // Extract the value for the key called "authors", which is the author(s)
                 // for the given book
-                String authors = "";
+                String authors;
                 if (volumeInfo.has("authors")){
-
                     JSONArray authorsJsonArray = volumeInfo.getJSONArray("authors");
+
+                    // Set the first author in the JSONarray to the String authors object.
+                    authors = authorsJsonArray.optString(0);
+
+                    // Set String authors object based on the number of authors for a given book
                     for (int j = 0; j < authorsJsonArray.length(); j++){
-                        authors += authorsJsonArray.optString(j) + " ";
+                        if (authorsJsonArray.length() == 1) {
+                            // if only one book author
+                            authors = authorsJsonArray.optString(j) + " ";
+                        } else if (authorsJsonArray.length() > 1) {
+                            // if more than one author
+                            authors = authors + ", " + authorsJsonArray.optString(j);
+                        }
                     }
+                } else {
+                    // if no author is listed.
+                    authors = "No authors listed.";
                 }
 
+                // For a given book, extract the JSONObject associated with the
+                // key called "imageLinks", which represents the url for a small thumbnail of the
+                // book cover.
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
 
+                // Save the thumbnail url as a String object
                 String smallThumbnail = imageLinks.optString("smallThumbnail");
 
+                // Create a new {@link Book} object with the book title, author(s), description of
+                // the book, url linking to further book details found at Google Books, and a small
+                // image of the book cover.  Add the new {@link Book} to the list of books.
                 books.add(new Book(bookTitle, authors, bookDescription, url, smallThumbnail));
             }
         } catch (JSONException e){

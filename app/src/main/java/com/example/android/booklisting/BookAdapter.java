@@ -24,7 +24,6 @@ public class BookAdapter extends ArrayAdapter<Book>{
         super(context, 0, booksInfo);
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         // Check if an existing view is being reused, otherwise inflate the view
@@ -53,7 +52,6 @@ public class BookAdapter extends ArrayAdapter<Book>{
         // the Book TextView for ID book_title.
         bookTitleView.setText(currentBook.getBookTitle());
 
-
         //Find the TextView for the list_books.xml layout with the ID book_author.
         TextView bookAuthorView = (TextView) listItemView.findViewById(R.id.book_author);
 
@@ -61,14 +59,12 @@ public class BookAdapter extends ArrayAdapter<Book>{
         // the Book TextView for ID book_author.
         bookAuthorView.setText(currentBook.getAuthor());
 
-
         //Find the TextView for the list_books.xml layout with the ID book_description.
         TextView bookDescriptionView = (TextView) listItemView.findViewById(R.id.book_description);
 
         // Get the book author from the currentBook object and set this text on
         // the Book TextView for ID book_description.
         bookDescriptionView.setText(currentBook.getDescription());
-
 
         return listItemView;
     }

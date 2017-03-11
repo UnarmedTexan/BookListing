@@ -2,13 +2,16 @@ package com.example.android.booklisting;
 
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,7 +28,8 @@ public class BookActivity extends AppCompatActivity
     private static final String LOG_TAG = BookActivity.class.getName();
 
     // Main portion of the Url for the book data requested from the Google Books API
-    private static final String googleBooks = "https://www.googleapis.com/books/v1/volumes?maxResults=10&q=";
+    private static final String googleBooks =
+            "https://www.googleapis.com/books/v1/volumes?maxResults=10&q=";
 
     // Constant value for the book loader ID. This is required if multiple loaders are being used.
     private static final int BOOK_LOADER_ID = 1;
@@ -46,6 +50,9 @@ public class BookActivity extends AppCompatActivity
 
     private ListView bookListView;
 
+    // Get a reference to the LoaderManager, in order to interact with loaders.
+    private LoaderManager loaderManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +60,28 @@ public class BookActivity extends AppCompatActivity
         setContentView(R.layout.books_activity);
 
         termSearch = (ImageView) findViewById(R.id.subject_search);
-
+        // Find the reference to the {@link ListView} in the layout
+        bookListView = (ListView) findViewById(R.id.list);
         loadingData = (ProgressBar) findViewById(R.id.loading_progress);
         loadingData.setVisibility(View.INVISIBLE);
+
+        // Initialize the loader. Pass in the int ID constant defined above and pass
+        // in null for the bundle. Pass in this activity for the LoaderCallbacks
+        // parameter (which is valid because this activity implements the
+        // LoaderCallbacks interface).
+        loaderManager = getLoaderManager();
+        loaderManager.initLoader(BOOK_LOADER_ID, null, BookActivity.this);
+        final EditText subjectEntered = (EditText) findViewById(R.id.subject_text);
+        mEmptyStateView = (TextView) findViewById(R.id.empty_view);
+        bookListView.setEmptyView(mEmptyStateView);
+
+        //Create a new book adapter which take an empty list of books as input
+        mAdapter = new BookAdapter(BookActivity.this, new ArrayList<Book>());
 
         termSearch.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 // Loader reset - this is to clear out any existing book data.
-                EditText subjectEntered = (EditText) findViewById(R.id.subject_text);
-
                 searchTerm = subjectEntered.getText().toString();
 
                 if (searchTerm == null || searchTerm.equals("")) {
@@ -72,18 +91,9 @@ public class BookActivity extends AppCompatActivity
                     // Find the Progress spinner & make it visible to the app user
                     loadingData.setVisibility(View.VISIBLE);
 
-                    // Find the reference to the {@link ListView} in the layout
-                    bookListView = (ListView) findViewById(R.id.list);
-
-                    //Create a new book adapter which take an empty list of books as input
-                    mAdapter = new BookAdapter(BookActivity.this, new ArrayList<Book>());
-
                     // Set the adapter on the {@link ListView}, so the list can be filled with books
                     // in the user interface.
                     bookListView.setAdapter(mAdapter);
-
-                    mEmptyStateView = (TextView) findViewById(R.id.empty_view);
-                    bookListView.setEmptyView(mEmptyStateView);
 
 
                     ConnectivityManager cm =
@@ -91,14 +101,10 @@ public class BookActivity extends AppCompatActivity
                     NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
                     if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()){
-                        // Get a reference to the LoaderManager, in order to interact with loaders.
                         LoaderManager loaderManager = getLoaderManager();
 
-                        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-                        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-                        // because this activity implements the LoaderCallbacks interface).
-                        loaderManager.initLoader(BOOK_LOADER_ID, null, BookActivity.this);
-
+                        // Restarts the loader.
+                        loaderManager.restartLoader(BOOK_LOADER_ID, null, BookActivity.this);
                     }
                     else{
                         loadingData.setVisibility(View.GONE);
@@ -106,31 +112,28 @@ public class BookActivity extends AppCompatActivity
                     }
                 }
             }
-
-
         });
 
+        bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-//        bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//
-//                // Locate the current book being clicked on by the user
-//                Book currentBook = mAdapter.getItem(position);
-//
-//                // Prepare the the String URL to be passed into the intent constructor by first
-//                // converting it into a URL object.
-//                Uri bookUri = Uri.parse(currentBook.getUrl());
-//
-//                // Generate a new intent to view the book URI
-//                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, bookUri);
-//
-//                // Use the intent to launch a new activity
-//                startActivity(websiteIntent);
-//            }
-//        });
+                // Locate the current book being clicked on by the user
+                Book currentBook = mAdapter.getItem(position);
 
+                // Prepare the the String URL to be passed into the intent constructor by first
+                // converting it into a URL object.
+                Uri bookUri = Uri.parse(currentBook.getUrl());
+
+                // Generate a new intent to view the book URI
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, bookUri);
+
+                // Use the intent to launch a new activity
+                startActivity(websiteIntent);
+            }
+        });
     }
+
     @Override
     public Loader<List<Book>>onCreateLoader(int i, Bundle bundle){
 
