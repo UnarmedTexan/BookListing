@@ -43,7 +43,7 @@ public class BookAdapter extends ArrayAdapter<Book>{
 
         // Load the book cover url string object to the Book ImageView for ID book_title.
         Picasso.with(getContext()).load(bookCoverUrl).fit().centerCrop().
-                placeholder(R.drawable.beach).error(R.drawable.beach).into(bookCover);
+                placeholder(R.drawable.no_cover).error(R.drawable.no_cover).into(bookCover);
 
         //Find the TextView for the list_books.xml layout with the ID book_title.
         TextView bookTitleView = (TextView) listItemView.findViewById(R.id.book_title);

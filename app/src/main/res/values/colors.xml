@@ -2,5 +2,18 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FF9800</color>
+
+    <!-- Text color used for ListView divider -->
+    <color name="divider">#BDBDBD</color>
+
+    <!-- Text color used for book author(s) and description -->
+    <color name="secondary_text">#757575</color>
+
+    <!-- Text color used for book title -->
+    <color name="primary_text">#212121</color>
+
+
+    <!-- Text color used for book title -->
+    <color name="edit_text">#B3E5FC</color>
 </resources>

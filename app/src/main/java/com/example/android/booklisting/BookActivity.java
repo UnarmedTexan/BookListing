@@ -1,16 +1,17 @@
 package com.example.android.booklisting;
 
-import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -65,29 +66,32 @@ public class BookActivity extends AppCompatActivity
         loadingData = (ProgressBar) findViewById(R.id.loading_progress);
         loadingData.setVisibility(View.INVISIBLE);
 
-        // Initialize the loader. Pass in the int ID constant defined above and pass
-        // in null for the bundle. Pass in this activity for the LoaderCallbacks
-        // parameter (which is valid because this activity implements the
-        // LoaderCallbacks interface).
-        loaderManager = getLoaderManager();
-        loaderManager.initLoader(BOOK_LOADER_ID, null, BookActivity.this);
+        loaderManager = getSupportLoaderManager();
+        loaderManager.initLoader(BOOK_LOADER_ID, null, BookActivity.this).forceLoad();
+
         final EditText subjectEntered = (EditText) findViewById(R.id.subject_text);
         mEmptyStateView = (TextView) findViewById(R.id.empty_view);
         bookListView.setEmptyView(mEmptyStateView);
 
+
         //Create a new book adapter which take an empty list of books as input
         mAdapter = new BookAdapter(BookActivity.this, new ArrayList<Book>());
 
-        termSearch.setOnClickListener(new View.OnClickListener(){
+        termSearch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                // Loader reset - this is to clear out any existing book data.
+            public void onClick(final View view) {
+
                 searchTerm = subjectEntered.getText().toString();
 
                 if (searchTerm == null || searchTerm.equals("")) {
                     Toast.makeText(BookActivity.this, getString(R.string.no_search_term),
                             Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
+                    // Hide keyboard once the search icon is touched
+                    InputMethodManager inputMethodManager =
+                            (InputMethodManager) getSystemService(BookActivity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(subjectEntered.getWindowToken(), 0);
+
                     // Find the Progress spinner & make it visible to the app user
                     loadingData.setVisibility(View.VISIBLE);
 
@@ -100,13 +104,13 @@ public class BookActivity extends AppCompatActivity
                             (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
-                    if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()){
-                        LoaderManager loaderManager = getLoaderManager();
+                    if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
+                        LoaderManager loaderManager = getSupportLoaderManager();
 
-                        // Restarts the loader.
-                        loaderManager.restartLoader(BOOK_LOADER_ID, null, BookActivity.this);
-                    }
-                    else{
+                        // Loader reset - this is to clear out any existing book data.
+                        loaderManager.restartLoader(BOOK_LOADER_ID, null, BookActivity.this).
+                                forceLoad();
+                    } else {
                         loadingData.setVisibility(View.GONE);
                         mEmptyStateView.setText(R.string.no_connection);
                     }
@@ -135,7 +139,7 @@ public class BookActivity extends AppCompatActivity
     }
 
     @Override
-    public Loader<List<Book>>onCreateLoader(int i, Bundle bundle){
+    public Loader<List<Book>> onCreateLoader(int i, Bundle bundle) {
 
         Log.v(LOG_TAG, "Our current URL is : " + googleBooks);
 
@@ -144,7 +148,7 @@ public class BookActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books){
+    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
 
         Log.v(LOG_TAG, "On load finished Books is :" + books);
 

@@ -8,27 +8,17 @@
         android:id="@+id/search_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/edit_text"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/subject_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/subject_search" />
-
-            <EditText
-                android:id="@+id/subject_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/subject_hint"
-                android:inputType="text" />
-        </LinearLayout>
+            android:hint="@string/subject_hint"
+            android:inputType="text" />
 
         <ImageView
             android:id="@+id/subject_search"
@@ -39,14 +29,21 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@id/search_text"
+        android:background="@color/divider" />
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/colorPrimary"
-        android:dividerHeight="2dp"
-        android:orientation="vertical"
-        android:layout_below="@id/search_text"/>
+        android:layout_below="@id/divider"
+        android:divider="@color/divider"
+        android:dividerHeight="4dp"
+        android:orientation="vertical" />
 
     <!-- Empty view is visible only when there are no list items. -->
     <TextView
