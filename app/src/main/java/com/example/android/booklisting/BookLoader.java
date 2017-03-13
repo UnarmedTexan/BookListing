@@ -9,6 +9,9 @@ import java.util.List;
  * Created by Mark on 3/5/2017.
  */
 
+
+// Loads a list of book objects by using an AsyncTaskLoader to perform a network request to a
+// specified Url, which includes user supplied search criteria
 public class BookLoader extends AsyncTaskLoader<List<Book>> {
 
     //Tag for log messages
@@ -19,7 +22,6 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
 
     /**
      * Constructs a new {@link BookLoader}.
-     *
      * @param context of the activity
      * @param url to load data from
      */
@@ -42,7 +44,7 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
             return null;
         }
 
-        // Perform the network request, parse the response, and extract a list of earthquakes.
+        // Perform the network request, parse the response, and extract a list of books.
         List<Book> books = SearchUtils.fetchBookData(mUrl);
         return books;
     }

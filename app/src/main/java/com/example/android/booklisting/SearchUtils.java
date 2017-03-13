@@ -10,6 +10,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +51,8 @@ public class SearchUtils {
         return books;
     }
 
-    private static URL createURL (String stringUrl){
+    // Returns new URL object from the given string URL.
+    private static URL createURL(String stringUrl) {
         URL url = null;
         try {
             url = new URL(stringUrl);
@@ -108,7 +110,8 @@ public class SearchUtils {
     private static String readFromStream(InputStream inputStream) throws IOException {
         StringBuilder output = new StringBuilder();
         if (inputStream != null) {
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream, Charset.forName("UTF-8"));
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line = reader.readLine();
             while (line != null) {
@@ -141,7 +144,7 @@ public class SearchUtils {
             JSONArray booksArray = baseJsonResponse.getJSONArray("items");
 
             // Create an {@link Book} object in the booksArray for each book.
-            for (int i = 0; i < booksArray.length(); i++){
+            for (int i = 0; i < booksArray.length(); i++) {
 
                 // Get the book at position i within the list of books
                 JSONObject currentBook = booksArray.getJSONObject(i);
@@ -161,21 +164,21 @@ public class SearchUtils {
                 // Extract the value for the key called "description"
                 String bookDescription = volumeInfo.optString("description");
                 // Trim the bookDescription if it's length is over 150 characters
-                    if (bookDescription.length() > 150){
-                        bookDescription = bookDescription.substring(0, 150) + "...";
-                    }
+                if (bookDescription.length() > 150) {
+                    bookDescription = bookDescription.substring(0, 150) + "...";
+                }
 
                 // Extract the value for the key called "authors", which is the author(s)
                 // for the given book
                 String authors;
-                if (volumeInfo.has("authors")){
+                if (volumeInfo.has("authors")) {
                     JSONArray authorsJsonArray = volumeInfo.getJSONArray("authors");
 
                     // Set the first author in the JSONarray to the String authors object.
                     authors = authorsJsonArray.optString(0);
 
                     // Set String authors object based on the number of authors for a given book
-                    for (int j = 0; j < authorsJsonArray.length(); j++){
+                    for (int j = 0; j < authorsJsonArray.length(); j++) {
                         if (authorsJsonArray.length() == 1) {
                             // if only one book author
                             authors = authorsJsonArray.optString(j) + " ";
@@ -202,8 +205,8 @@ public class SearchUtils {
                 // image of the book cover.  Add the new {@link Book} to the list of books.
                 books.add(new Book(bookTitle, authors, bookDescription, url, smallThumbnail));
             }
-        } catch (JSONException e){
-            Log.e ("SearchUtils", "Problem parsing the book JSON results", e);
+        } catch (JSONException e) {
+            Log.e("SearchUtils", "Problem parsing the book JSON results", e);
         }
         // return the list of books
         return books;

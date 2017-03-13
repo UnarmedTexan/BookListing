@@ -16,16 +16,19 @@ import java.util.ArrayList;
  * Created by Mark on 3/4/2017.
  */
 
-public class BookAdapter extends ArrayAdapter<Book>{
+// ArrayAdapter used to to provide the layout for list of Book objects based on user entered
+// search criteria.
+public class BookAdapter extends ArrayAdapter<Book> {
 
     private static final String LOG_TAG = BookAdapter.class.getSimpleName();
 
-    public BookAdapter(Context context, ArrayList<Book> booksInfo){
+
+    public BookAdapter(Context context, ArrayList<Book> booksInfo) {
         super(context, 0, booksInfo);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         // Check if an existing view is being reused, otherwise inflate the view
         View listItemView = convertView;
         if (listItemView == null) {

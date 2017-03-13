@@ -46,7 +46,6 @@
             android:textStyle="italic"
             tools:text="Long placeholder description which should wrap to what could be more than
             2 lines of text" />
-
     </LinearLayout>
 
 </LinearLayout>
