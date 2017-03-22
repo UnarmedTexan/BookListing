@@ -29,46 +29,66 @@ public class BookAdapter extends ArrayAdapter<Book> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        // initialize viewHolder
+        ViewHolder viewHolder;
+
         // Check if an existing view is being reused, otherwise inflate the view
-        View listItemView = convertView;
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.list_books, parent, false);
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = LayoutInflater.from(getContext())
+                    .inflate(R.layout.list_books, parent, false);
+
+            //Find the ImageView for the list_books.xml layout with the ID book_cover.
+            viewHolder.bookCover = (ImageView) convertView.findViewById(R.id.book_cover);
+
+            //Find the TextView for the list_books.xml layout with the ID book_title.
+            viewHolder.bookTitleView = (TextView) convertView.findViewById(R.id.book_title);
+
+            //Find the TextView for the list_books.xml layout with the ID book_author.
+            viewHolder.bookAuthorView = (TextView) convertView.findViewById(R.id.book_author);
+
+            //Find the TextView for the list_books.xml layout with the ID book_description.
+            viewHolder.bookDescriptionView = (TextView)
+                    convertView.findViewById(R.id.book_description);
+
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
         //get the {@link Book} object for this list position
         Book currentBook = getItem(position);
 
-        //Find the ImageView for the list_books.xml layout with the ID book_cover.
-        ImageView bookCover = (ImageView) listItemView.findViewById(R.id.book_cover);
+        // Get the ListView and set as ID list_bucket
+        viewHolder.textContainer = (View) convertView.findViewById(R.id.list_bucket);
+
+        // Get the book title from the currentBook object and set this text on
+        // the Book TextView for ID book_title.
+        viewHolder.bookTitleView.setText(currentBook.getBookTitle());
+
+        // Get the book author from the currentBook object and set this text on
+        // the Book TextView for ID book_author.
+        viewHolder.bookAuthorView.setText(currentBook.getAuthor());
+
+        // Get the book author from the currentBook object and set this text on
+        // the Book TextView for ID book_description.
+        viewHolder.bookDescriptionView.setText(currentBook.getDescription());
 
         // Create String object of the URL for the book cover thumbnail.
         String bookCoverUrl = currentBook.getBookCover();
 
         // Load the book cover url string object to the Book ImageView for ID book_title.
-        Picasso.with(getContext()).load(bookCoverUrl).fit().centerCrop().
-                placeholder(R.drawable.no_cover).error(R.drawable.no_cover).into(bookCover);
+        Picasso.with(getContext()).load(bookCoverUrl).fit().centerCrop().placeholder
+                (R.drawable.no_cover).error(R.drawable.no_cover).into(viewHolder.bookCover);
 
-        //Find the TextView for the list_books.xml layout with the ID book_title.
-        TextView bookTitleView = (TextView) listItemView.findViewById(R.id.book_title);
+        return convertView;
+    }
 
-        // Get the book title from the currentBook object and set this text on
-        // the Book TextView for ID book_title.
-        bookTitleView.setText(currentBook.getBookTitle());
-
-        //Find the TextView for the list_books.xml layout with the ID book_author.
-        TextView bookAuthorView = (TextView) listItemView.findViewById(R.id.book_author);
-
-        // Get the book author from the currentBook object and set this text on
-        // the Book TextView for ID book_author.
-        bookAuthorView.setText(currentBook.getAuthor());
-
-        //Find the TextView for the list_books.xml layout with the ID book_description.
-        TextView bookDescriptionView = (TextView) listItemView.findViewById(R.id.book_description);
-
-        // Get the book author from the currentBook object and set this text on
-        // the Book TextView for ID book_description.
-        bookDescriptionView.setText(currentBook.getDescription());
-
-        return listItemView;
+    private static class ViewHolder {
+        ImageView bookCover;
+        TextView bookTitleView;
+        TextView bookAuthorView;
+        TextView bookDescriptionView;
+        View textContainer;
     }
 }
